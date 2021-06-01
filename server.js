@@ -5,7 +5,7 @@ import express from "express";
 const port = process.env.PORT || 8002;
 // App Config
 const app = express();
-var server = app.listen(8081, function () {
+var server = app.listen(port, function () {
     var host = server.address().address
     var port = server.address().port
     console.log("Covid vaccine app listening at http://%s:%s", host, port)
