@@ -44,27 +44,30 @@ app.get('/toggle', function (req, res) {
 
 // HTTP Axios Call to SetuServer of CoVIN
 async function SetuCall(callingDate) {
-    try {
-        const response = await axios.get('https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id=265&date=' + callingDate)
-        for (let center of response.data.sessions) {
-            if ((center.available_capacity_dose1 > 0) && (center.min_age_limit == 18)) {
+    axios.get('https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=560043&date=' + callingDate).then( async function (response) {
+            try {
 
-                if (email_service) {
-
-                    var response_text = 'Hi, Get ready for some real fkn vaccine bitches cause its here at :' + "\nAvailable Doses : " + center.available_capacity_dose1 + "\nDate : " + center.date + "\nAddress : " + center.name + center.address + "\nCity : "+ center.district_name + "\nState : "+ center.state_name +"\nPin : " + center.pincode+ "\nVaccine Name : " + center.vaccine + "\nFee : " + center.fee_type;
-                    await transporter.sendMail({
-                        from: 'sreejit.research@gmail.com',
-                        to: receivers,
-                        subject: 'Covin Notifier',
-                        text: response_text,
-                    });
+            for (let center of response.data.sessions) {
+                if ((center.available_capacity_dose1 > 0) && (center.min_age_limit == 18)) {
+                    conosle.log("Found Some")
+                    if (email_service) {
+    
+                        var response_text = 'Hi, Get ready for some real fkn vaccine bitches cause its here at :' + "\nAvailable Doses : " + center.available_capacity_dose1 + "\nDate : " + center.date + "\nAddress : " + center.name + center.address + "\nCity : "+ center.district_name + "\nState : "+ center.state_name +"\nPin : " + center.pincode+ "\nVaccine Name : " + center.vaccine + "\nFee : " + center.fee_type;
+                        await transporter.sendMail({
+                            from: 'sreejit.research@gmail.com',
+                            to: receivers,
+                            subject: 'Covin Notifier',
+                            text: response_text,
+                            
+                        });
+                    }
+    
                 }
-
             }
+        } catch (error) {
+            console.log(error.response);
         }
-    } catch (error) {
-        console.log(error.response);
-    }
+        })
 };
 
 
